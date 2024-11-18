@@ -63,16 +63,18 @@ iftool() {
 	tell application "System Events"
 		set visible of application process "CrossOver" to false
 	end tell'
+		ift_tool_process='IFT_Tool.exe'
+	else
+		ift_tool_process='wine64-preloader'
 	fi
 
-	# Wait until IFTool is ready
-	while ! pgrep -lq IFT_Tool.exe; do
+	print_info "Wait until IFTool is ready…\n"
+	while ! pgrep -lq "$ift_tool_process"; do
 		sleep 1
 	done
 
-	# Wait until IFTool is closed
 	print_info "Wait until IFTool is closed…\n"
-	while pgrep -lq IFT_Tool.exe; do
+	while pgrep -lq "$ift_tool_process"; do
 		sleep 1
 	done
 }
