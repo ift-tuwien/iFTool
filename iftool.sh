@@ -1,13 +1,13 @@
-#!/bin/zsh
+#!/bin/sh
 
 # -- Functions -----------------------------------------------------------------
 
 print_info() {
-	printf "⚙️  $@"
+	printf '⚙️ %s' "$@"
 }
 
 exit_error() {
-	printf >&2 "😱 \033[31;1;4m$@\033[0m"
+	printf >&2 '😱 \033[31;1;4m%s\033[0m' "$@"
 	exit 1
 }
 
@@ -17,7 +17,7 @@ get_wine_app() {
 	elif mdfind "kMDItemKind == 'Application'" | grep -q 'Wine Stable'; then
 		wine_app='Wine Stable'
 	fi
-	printf "%s" "$wine_app"
+	printf "%s" "${wine_app}"
 }
 
 init() {
@@ -27,25 +27,27 @@ init() {
 
 	print_info "Determine external IP\n"
 	external_ips="$(curl ifconfig.me)"
-	print_info "External IPs:\n%s\n" "$external_ips"
-	if ! printf '%s' "$external_ips" | grep -Eq "$internal_ip_regex"; then
-		print_info 'Connect to VPN “%s”\n' "$vpn"
-		networksetup -connectpppoeservice "$vpn"
+	print_info "External IPs:\n%s\n" "${external_ips}"
+	if ! printf '%s' "${external_ips}" | grep -Eq "${internal_ip_regex}"; then
+		print_info 'Connect to VPN “%s”\n' "${vpn}"
+		networksetup -connectpppoeservice "${vpn}"
 		timeout=10
-		time_left="$timeout"
-		while ! scutil --nc list | grep "$vpn" | grep -q Connected; do
-			if [ "$time_left" -lt 1 ]; then
-				exit_error "Unable to connect to VPN “$vpn” in $timeout seconds"
+		time_left="${timeout}"
+		while ! scutil --nc list | grep "${vpn}" | grep -q Connected; do
+			if [ "${time_left}" -lt 1 ]; then
+				exit_error \
+					'Unable to connect to VPN “'"${vpn}"'” in '"${timeout}"' seconds'
 			fi
 			sleep 1
 			time_left=$((time_left - 1))
 		done
 	fi
 	print_info "Mount SMB volume\n"
-	message="$(osascript -e "mount volume \"$smb_path\"" 2>&1 > /dev/null)"
+	message="$(osascript -e "mount volume \"${smb_path}\"" 2>&1 > /dev/null)"
+	# shellcheck disable=SC2181
 	if [ "$?" -ne 0 ]; then
-		error_message="Unable to mount SMB volume: $message\n"
-		exit_error "$error_message"
+		error_message="Unable to mount SMB volume: ${message}\n"
+		exit_error "${error_message}"
 	fi
 
 }
@@ -55,9 +57,9 @@ iftool() {
 
 	wine_app="$(get_wine_app)"
 	print_info "Open IFTool\n"
-	open -jga "$wine_app" "$iftool_path"
+	open -jga "${wine_app}" "${iftool_path}"
 
-	if [ $wine_app = "CrossOver" ]; then
+	if [ "${wine_app}" = "CrossOver" ]; then
 		# Hide CrossOver window
 		osascript -e '
 	tell application "System Events"
@@ -69,12 +71,12 @@ iftool() {
 	fi
 
 	print_info "Wait until IFTool is ready…\n"
-	while ! pgrep -lq "$ift_tool_process"; do
+	while ! pgrep -lq "${ift_tool_process}"; do
 		sleep 1
 	done
 
 	print_info "Wait until IFTool is closed…\n"
-	while pgrep -lq "$ift_tool_process"; do
+	while pgrep -lq "${ift_tool_process}"; do
 		sleep 1
 	done
 }
@@ -83,10 +85,10 @@ cleanup() {
 	vpn="$1"
 	iftool_mountpoint="$2"
 
-	diskutil unmount "$iftool_mountpoint" > /dev/null
-	networksetup -disconnectpppoeservice "$vpn"
+	diskutil unmount "${iftool_mountpoint}" > /dev/null
+	networksetup -disconnectpppoeservice "${vpn}"
 
-	killall "$(get_wine_app)"
+	killall "$(get_wine_app || true)"
 }
 
 main() {
@@ -94,13 +96,13 @@ main() {
 
 	iftool_directory_prefix='30_IT'
 	iftool_directory='01_IFT_Tool'
-	smb_path="smb://data.ift.tuwien.ac.at/$iftool_directory_prefix"
-	iftool_mountpoint="/Volumes/$iftool_directory_prefix"
-	iftool_path="$iftool_mountpoint/$iftool_directory/IFT_Tool.exe"
+	smb_path="smb://data.ift.tuwien.ac.at/${iftool_directory_prefix}"
+	iftool_mountpoint="/Volumes/${iftool_directory_prefix}"
+	iftool_path="${iftool_mountpoint}/${iftool_directory}/IFT_Tool.exe"
 
-	init "$vpn" "$smb_path"
-	iftool "$iftool_path"
-	cleanup "$vpn" "$iftool_mountpoint"
+	init "${vpn}" "${smb_path}"
+	iftool "${iftool_path}"
+	cleanup "${vpn}" "${iftool_mountpoint}"
 }
 
 # -- Main ----------------------------------------------------------------------
