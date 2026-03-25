@@ -4,11 +4,9 @@ Script to run [IFTool](smb://data.ift.tuwien.ac.at/30_IT/01_IFT_Tool) on macOS u
 
 This tool basically automates the following tasks
 
-1. Opens a VPN tunnel to TU Vienna, if your computer does not use an internal IP (`128.130.106.…` or `128.131…`) address, i.e. your computer is not connected via Ethernet to the (IFT part) of the university network
-2. Mount the SMB volume that contains the IFTool
-3. Opens the IFTool using [CrossOver][] (or [Wine][])
-4. Cleans up resources:
-   - Closes VPN tunnel
+1. Mount the SMB volume that contains the IFTool
+2. Opens the IFTool using [CrossOver][] (or [Wine][])
+3. Cleans up resources:
    - Unmounts SMB share
    - Closes CrossOver (or [Wine][])
 
