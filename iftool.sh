@@ -3,7 +3,7 @@
 # -- Functions -----------------------------------------------------------------
 
 print_info() {
-	printf '⚙️ %s' "$@"
+	printf '⚙️ %s\n' "$@"
 }
 
 exit_error() {
@@ -22,11 +22,11 @@ get_wine_app() {
 
 init() {
 	smb_path="$1"
-	print_info "Mount SMB volume\n"
+	print_info "Mount SMB volume"
 	message="$(osascript -e "mount volume \"${smb_path}\"" 2>&1 > /dev/null)"
 	# shellcheck disable=SC2181
 	if [ "$?" -ne 0 ]; then
-		error_message="Unable to mount SMB volume: ${message}\n"
+		error_message="Unable to mount SMB volume: ${message}"
 		exit_error "${error_message}"
 	fi
 
@@ -36,7 +36,7 @@ iftool() {
 	iftool_path="$1"
 
 	wine_app="$(get_wine_app)"
-	print_info "Open IFTool\n"
+	print_info "Open IFTool"
 	open -jga "${wine_app}" "${iftool_path}"
 
 	if [ "${wine_app}" = "CrossOver" ]; then
@@ -50,12 +50,12 @@ iftool() {
 		ift_tool_process='wine64-preloader'
 	fi
 
-	print_info "Wait until IFTool is ready…\n"
+	print_info "Wait until IFTool is ready…"
 	while ! pgrep -lq "${ift_tool_process}"; do
 		sleep 1
 	done
 
-	print_info "Wait until IFTool is closed…\n"
+	print_info "Wait until IFTool is closed…"
 	while pgrep -lq "${ift_tool_process}"; do
 		sleep 1
 	done
