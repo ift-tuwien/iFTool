@@ -8,7 +8,6 @@ This tool basically automates the following tasks
 2. Mount the SMB volume that contains the IFTool
 3. Opens the IFTool using [CrossOver][] (or [Wine][])
 4. Cleans up resources:
-
    - Closes VPN tunnel
    - Unmounts SMB share
    - Closes CrossOver (or [Wine][])
@@ -55,9 +54,7 @@ in Finder (<kbd>⌘</kbd> + <kbd>K</kbd>) and open `IFT_Tool.exe` with the [Cros
 
 ### Script
 
-**Note:** You only need to create the VPN configuration below, if you are not connected to the network of the TU Vienna already (for example using a wired connection or a WiFi connection to the network `tunet`).
-
-The script assumes that your VPN network configuration for the university is called `TU Vienna`. If that is not the case, then please replace `TU Vienna` with the name of your [TU Vienna VPN configuration](https://www.it.tuwien.ac.at/en/services/network-infrastructure-and-server-services/tunet/vpn-virtual-private-network) or rename your VPN configuration to “TU Vienna”.
+The script assumes that you are connected to the network of the TU Wien. If this is not the case, then you need to connect [via VPN](https://www.it.tuwien.ac.at/en/services/network-and-servers/tuvpn) before you start the script.
 
 ## Usage
 
@@ -90,7 +87,6 @@ If you want you can also create a very basic application with Automator that lau
 
 6. Store the application (<kbd>⌘</kbd> + <kbd>S</kbd>) as “IFTool”
 7. Optional: Change the icon
-
    1. Copy the file [`ApplicationStub.icns`](Pictures/ApplicationStub.icns)
    2. Navigate to the directory where you stored the application from step 5.
    3. Right click on the application and choose “Show Package Contents”
