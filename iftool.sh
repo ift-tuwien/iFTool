@@ -62,8 +62,7 @@ iftool() {
 }
 
 cleanup() {
-  vpn="$1"
-  iftool_mountpoint="$2"
+  iftool_mountpoint="$1"
 
   diskutil unmount "${iftool_mountpoint}" >/dev/null
 
@@ -79,7 +78,7 @@ main() {
 
   init "${smb_path}"
   iftool "${iftool_path}"
-  cleanup "${vpn}" "${iftool_mountpoint}"
+  cleanup "${iftool_mountpoint}"
 }
 
 # -- Main ----------------------------------------------------------------------
