@@ -77,8 +77,8 @@ main() {
   iftool_path="${iftool_mountpoint}/${iftool_directory}/IFT_Tool.exe"
 
   init "${smb_path}"
+  trap 'cleanup '"${iftool_mountpoint}" ABRT EXIT INT QUIT
   iftool "${iftool_path}"
-  cleanup "${iftool_mountpoint}"
 }
 
 # -- Main ----------------------------------------------------------------------
