@@ -3,11 +3,17 @@
 # -- Functions -----------------------------------------------------------------
 
 print_info() {
-  printf '⚙️ %s\n' "$@"
+  printf '%s\n' "$@"
+  log emit --public --subsystem ift --type info "${@}"
+}
+
+print_error() {
+  printf >&2 '\033[31;1;4m%s\033[0m' "$@"
+  log emit --public --subsystem ift --type error "${@}"
 }
 
 exit_error() {
-  printf >&2 '😱 \033[31;1;4m%s\033[0m' "$@"
+  print_error "${@}"
   exit 1
 }
 
@@ -25,7 +31,7 @@ init() {
   print_info "Mount SMB volume"
   message="$(osascript -e "mount volume \"${smb_path}\"" 2>&1 >/dev/null)"
   # shellcheck disable=SC2181
-  if [ "$?" -ne 0 ]; then
+  if [ "${?}" -ne 0 ]; then
     error_message="Unable to mount SMB volume: ${message}"
     exit_error "${error_message}"
   fi
@@ -64,7 +70,11 @@ iftool() {
 cleanup() {
   iftool_mountpoint="$1"
 
-  diskutil unmount "${iftool_mountpoint}" >/dev/null
+  error="$(diskutil unmount "${iftool_mountpoint}" 2>&1 >/dev/null)"
+  # shellcheck disable=SC2181
+  if [ "$?" -ne 0 ]; then
+    print_error "${error}"
+  fi
 
   killall "$(get_wine_app || true)"
 }
