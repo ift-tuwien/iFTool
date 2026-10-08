@@ -95,3 +95,18 @@ If you want you can also create a very basic application with Automator that lau
 
 - No pictures in “Mitarbeiterinformationen” (“Extras” → “Telefonnummern” <kbd>Ctrl</kbd> + <kbd>T</kbd>)
 - Items in “Hilfe” menu do not work (e.g. “Hilfe” → “IFT_Tool allgemein”); Workaround: Link to [SMB share containing help documents](smb://data.ift.tuwien.ac.at/01_IFT/40_Informationen-f%C3%BCr-neue-MA))
+
+## Development
+
+### Requirements
+
+- [just](https://just.systems)
+- [ShellCheck](https://www.shellcheck.net)
+
+### Code Checks
+
+Please run the following command in the root of the repository:
+
+```sh
+just
+```
