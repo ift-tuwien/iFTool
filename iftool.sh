@@ -4,12 +4,12 @@
 
 print_info() {
   printf '%s\n' "$@"
-  log emit --public --subsystem ift --type info "${@}"
+  log emit --public --subsystem ift --category iftool --type info "${@}"
 }
 
 print_error() {
   printf >&2 '\033[31;1;4m%s\033[0m' "$@"
-  log emit --public --subsystem ift --type error "${@}"
+  log emit --public --subsystem ift --category iftool --type error "${@}"
 }
 
 exit_error() {
